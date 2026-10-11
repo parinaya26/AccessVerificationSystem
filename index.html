@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LabSecure | Access Verification</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="LabSecure home">
+        <span class="brand-mark"><span></span><span></span><span></span></span>
+        <span><strong>LabSecure</strong><small>ACCESS CONTROL</small></span>
+      </a>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="nav">
+        <a class="nav-link active" href="#overview"><span class="nav-icon">⌂</span> Overview</a>
+        <a class="nav-link" href="#researchers"><span class="nav-icon">♙</span> Researchers</a>
+        <a class="nav-link" href="#requests"><span class="nav-icon">⇄</span> Access requests <span class="nav-count" id="navQueueCount">0</span></a>
+        <a class="nav-link" href="#activity"><span class="nav-icon">◷</span> Activity log</a>
+        <a class="nav-link" href="#find"><span class="nav-icon">⌕</span> Find & organize</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="security-card">
+          <div class="security-icon">✦</div>
+          <strong>Security status</strong>
+          <p>Demo environment is active. No real biometric or building access is connected.</p>
+          <span class="status-pill"><i></i> Demo mode</span>
+        </div>
+        <div class="profile">
+          <div class="avatar">LS</div>
+          <div><strong>Lab administrator</strong><small>Access management</small></div>
+          <span class="profile-dots">•••</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="breadcrumbs">Workspace <span>/</span> <strong>Overview</strong></div>
+        <div class="top-actions"><span class="today" id="todayLabel"></span><button class="icon-button" title="Notifications" aria-label="Notifications">♧</button><div class="top-avatar">LA</div></div>
+      </header>
+
+      <section class="page-heading" id="overview">
+        <div>
+          <p class="eyebrow">BIOMEDICAL RESEARCH FACILITY</p>
+          <h1>Access overview</h1>
+          <p class="subheading">Manage researcher records, verify entry requests, and review security activity in one place.</p>
+        </div>
+        <div class="heading-actions"><span class="live-dot"></span><span>System ready</span><button class="primary-button" id="quickAddBtn">＋ Add researcher</button></div>
+      </section>
+
+      <section class="stats-grid" aria-label="System summary">
+        <article class="stat-card"><div class="stat-top"><span>Total researchers</span><span class="stat-icon lilac">♙</span></div><div class="stat-number" id="statResearchers">0</div><div class="stat-foot"><span class="mini-dot purple"></span> Registered profiles</div></article>
+        <article class="stat-card"><div class="stat-top"><span>Pending requests</span><span class="stat-icon peach">⇄</span></div><div class="stat-number" id="statPending">0</div><div class="stat-foot"><span class="mini-dot orange"></span> Awaiting verification</div></article>
+        <article class="stat-card"><div class="stat-top"><span>Approved today</span><span class="stat-icon mint">✓</span></div><div class="stat-number" id="statApproved">0</div><div class="stat-foot"><span class="mini-dot green"></span> In this session</div></article>
+        <article class="stat-card"><div class="stat-top"><span>Security actions</span><span class="stat-icon blue">⌁</span></div><div class="stat-number" id="statActions">0</div><div class="stat-foot"><span class="mini-dot blue-dot"></span> Recorded events</div></article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel researchers-panel" id="researchers">
+          <div class="panel-heading"><div><h2>Researcher directory</h2><p>Authorized personnel and access permissions</p></div><button class="text-button" id="directoryAddBtn">＋ Add new</button></div>
+          <div class="toolbar"><label class="search-field"><span>⌕</span><input id="researcherSearch" type="search" placeholder="Search name or researcher ID..." /></label><select id="statusFilter" aria-label="Filter researcher status"><option value="all">All statuses</option><option value="Active">Active</option><option value="Revoked">Revoked</option></select></div>
+          <div class="table-wrap"><table><thead><tr><th>RESEARCHER</th><th>ID</th><th>AUTHORIZED AREA</th><th>STATUS</th><th></th></tr></thead><tbody id="researcherTable"></tbody></table></div>
+          <div class="panel-footer"><span id="directoryCount">0 researchers</span><span>Records stored in this browser</span></div>
+        </article>
+
+        <article class="panel request-panel" id="requests">
+          <div class="panel-heading"><div><h2>Access requests</h2><p>Requests are processed in arrival order</p></div><span class="count-badge" id="requestBadge">0 pending</span></div>
+          <form id="requestForm" class="request-form">
+            <label>Researcher<select id="requestResearcher" required></select></label>
+            <label>Requested area<select id="requestZone" required><option value="Wet Lab">Wet Lab</option><option value="Genomics">Genomics</option><option value="Storage">Storage</option><option value="Administration">Administration</option></select></label>
+            <button class="primary-button full-button" type="submit">＋ Submit access request</button>
+          </form>
+          <div class="queue-heading"><strong>Waiting queue</strong><span>FIFO order</span></div>
+          <div id="queueList" class="queue-list"></div>
+          <button class="secondary-button full-button" id="processNextBtn">Verify next request <span>→</span></button>
+        </article>
+      </section>
+
+      <section class="content-grid lower-grid">
+        <article class="panel activity-panel" id="activity">
+          <div class="panel-heading"><div><h2>Recent activity</h2><p>A chronological record of verification decisions</p></div><button class="text-button" id="clearActivityBtn">Clear history</button></div>
+          <div class="activity-list" id="activityList"></div>
+        </article>
+        <article class="panel find-panel" id="find">
+          <div class="panel-heading"><div><h2>Find & organize</h2><p>Search records or arrange the directory</p></div><span class="small-chip">Directory tools</span></div>
+          <label class="field-label">Find researcher by ID or name</label>
+          <div class="inline-search"><input id="lookupInput" type="search" placeholder="e.g. R-104 or Maya Chen" /><button class="primary-button" id="lookupBtn">Find</button></div>
+          <div id="lookupResult" class="lookup-result">Search results will appear here.</div>
+          <div class="sort-row"><div><strong>Sort directory</strong><small>Organize researcher records by ID</small></div><button class="secondary-button" id="sortBtn">Sort by ID ↕</button></div>
+          <div class="sort-row"><div><strong>Emergency lockdown</strong><small>Temporarily deny all new access approvals</small></div><button class="lock-button" id="lockdownBtn">Enable lockdown</button></div>
+          <div class="lock-banner hidden" id="lockBanner">Lockdown is active. Requests will be denied until it is disabled.</div>
+        </article>
+      </section>
+      <footer class="footer"><span>LabSecure <span class="footer-sep">•</span> Access verification demo</span><span>Designed for demonstration and coursework</span></footer>
+    </main>
+  </div>
+
+  <dialog id="researcherDialog" class="modal">
+    <form id="researcherForm" method="dialog">
+      <div class="modal-heading"><div><p class="eyebrow">PERSONNEL RECORD</p><h2>Add researcher</h2></div><button type="button" class="close-button" id="closeDialog" aria-label="Close">×</button></div>
+      <label>Full name<input id="newName" required maxlength="70" placeholder="e.g. Maya Chen" /></label>
+      <label>Researcher ID<input id="newId" required maxlength="20" placeholder="e.g. R-104" /></label>
+      <label>Authorized area<select id="newZone"><option>Wet Lab</option><option>Genomics</option><option>Storage</option><option>Administration</option></select></label>
+      <div class="modal-actions"><button type="button" class="secondary-button" id="cancelDialog">Cancel</button><button type="submit" class="primary-button">Save researcher</button></div>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="script.js"></script>
+</body>
+</html>
